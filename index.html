@@ -4,218 +4,303 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
   <title>Судалгааны сан</title>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --bg: #0f0f11; --surface: #1a1a1f; --surface2: #22222a;
-      --border: #2e2e38; --accent: #5b6af5; --accent2: #8b5cf6;
-      --text: #e8e8f0; --muted: #6b6b80;
-      --green: #22c55e; --orange: #f97316; --blue: #3b82f6; --red: #ef4444;
-      --nav-h: 56px;
-      --bottom-h: 64px;
+      --bg:        #f0f4f8;
+      --surface:   #ffffff;
+      --surface2:  #f7f9fc;
+      --border:    #dde4ee;
+      --accent:    #3a7bd5;
+      --accent2:   #2563b0;
+      --accent-light: #e8f0fc;
+      --text:      #1e2d45;
+      --muted:     #7b8fa8;
+      --green:     #22a861;
+      --green-bg:  #edf7f2;
+      --orange:    #e07b2a;
+      --orange-bg: #fdf3e8;
+      --blue:      #3a7bd5;
+      --blue-bg:   #e8f0fc;
+      --red:       #d94040;
+      --red-bg:    #fdeaea;
+      --shadow-sm: 0 1px 4px rgba(58,123,213,0.07);
+      --shadow:    0 2px 12px rgba(58,123,213,0.10);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body { height: 100%; }
-    body { font-family: 'IBM Plex Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
     /* NAV */
     nav {
-      background: var(--surface); border-bottom: 1px solid var(--border);
-      padding: 0 1rem; display: flex; align-items: center; gap: 1rem;
-      height: var(--nav-h); position: sticky; top: 0; z-index: 100;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+      height: 60px;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: var(--shadow-sm);
     }
-    .nav-logo { font-weight: 600; font-size: 1rem; color: var(--text); flex: 1; }
-    .nav-logo span { color: var(--accent); }
+    .nav-logo {
+      font-size: 1.1rem; font-weight: 700; color: var(--accent);
+      display: flex; align-items: center; gap: 0.5rem; flex: 1;
+    }
+    .nav-logo-icon {
+      width: 32px; height: 32px; background: var(--accent); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-logo-icon svg { color: #fff; }
     .btn-add-nav {
       background: var(--accent); color: #fff; border: none;
-      padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.82rem;
-      font-weight: 500; cursor: pointer; white-space: nowrap;
+      padding: 0.5rem 1.2rem; border-radius: 20px;
+      font-size: 0.85rem; font-weight: 600; cursor: pointer;
       display: flex; align-items: center; gap: 0.4rem;
+      box-shadow: 0 2px 8px rgba(58,123,213,0.3);
+      transition: background 0.2s, transform 0.1s;
     }
+    .btn-add-nav:hover { background: var(--accent2); }
+    .btn-add-nav:active { transform: scale(0.97); }
 
     /* MAIN */
-    main { max-width: 700px; margin: 0 auto; padding: 1rem 1rem 6rem; }
+    main { max-width: 720px; margin: 0 auto; padding: 1.5rem 1rem 6rem; }
 
     /* STATS */
-    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-bottom: 1rem; }
-    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.7rem 0.8rem; }
-    .stat-label { font-size: 0.62rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.2rem; }
-    .stat-value { font-size: 1.3rem; font-weight: 600; }
-    .stat-value.accent { color: var(--accent); }
+    .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1rem; text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .stat-value { font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+    .stat-label { font-size: 0.68rem; color: var(--muted); margin-top: 2px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
 
-    /* FILTERS */
-    .filters { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    /* SEARCH */
+    .filters { display: flex; gap: 0.6rem; margin-bottom: 1.2rem; }
     .search-wrap { flex: 1; position: relative; }
-    .search-wrap svg { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
-    input[type="text"] { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 0.65rem 0.9rem 0.65rem 2.3rem; border-radius: 10px; font-size: 0.9rem; outline: none; }
+    .search-wrap svg { position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+    input[type="text"] {
+      width: 100%; background: var(--surface); border: 1.5px solid var(--border);
+      color: var(--text); padding: 0.7rem 1rem 0.7rem 2.5rem;
+      border-radius: 12px; font-size: 0.9rem; outline: none;
+      font-family: 'Nunito', sans-serif;
+      box-shadow: var(--shadow-sm); transition: border-color 0.2s;
+    }
     input[type="text"]:focus { border-color: var(--accent); }
     input[type="text"]::placeholder { color: var(--muted); }
     .filter-btn {
-      background: var(--surface); border: 1px solid var(--border); color: var(--muted);
-      padding: 0 0.9rem; border-radius: 10px; font-size: 0.8rem; cursor: pointer;
-      display: flex; align-items: center; gap: 0.3rem; white-space: nowrap;
+      background: var(--surface); border: 1.5px solid var(--border);
+      color: var(--muted); padding: 0 1rem; border-radius: 12px;
+      font-size: 0.82rem; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; gap: 0.4rem;
+      box-shadow: var(--shadow-sm); transition: all 0.2s;
+      font-family: 'Nunito', sans-serif;
     }
-    .filter-btn.active { border-color: var(--accent); color: var(--accent); }
+    .filter-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
 
     /* FILTER SHEET */
-    .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 150; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+    .sheet-overlay { position: fixed; inset: 0; background: rgba(30,45,69,0.35); z-index: 150; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
     .sheet-overlay.open { opacity: 1; pointer-events: all; }
     .sheet {
-      position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface);
-      border-top: 1px solid var(--border); border-radius: 20px 20px 0 0;
-      padding: 1.2rem 1.2rem 2.5rem; z-index: 151;
-      transform: translateY(100%); transition: transform 0.3s cubic-bezier(.4,0,.2,1);
-      max-width: 700px; margin: 0 auto;
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--surface); border-top: 1px solid var(--border);
+      border-radius: 24px 24px 0 0; padding: 1.2rem 1.4rem 2.5rem;
+      z-index: 151; transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+      max-width: 720px; margin: 0 auto;
+      box-shadow: 0 -4px 24px rgba(58,123,213,0.10);
     }
     .sheet-overlay.open .sheet { transform: translateY(0); }
-    .sheet-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 1.2rem; }
-    .sheet-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 1rem; }
-    .sheet-row { margin-bottom: 1rem; }
-    .sheet-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.4rem; }
-    .chip-group { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .sheet-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 1.2rem; }
+    .sheet-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; color: var(--text); }
+    .sheet-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+    .chip-group { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
     .chip {
-      padding: 0.4rem 0.9rem; border-radius: 20px; border: 1px solid var(--border);
-      font-size: 0.8rem; cursor: pointer; background: var(--surface2); color: var(--muted);
-      transition: all 0.15s;
+      padding: 0.45rem 1rem; border-radius: 20px;
+      border: 1.5px solid var(--border); font-size: 0.82rem;
+      cursor: pointer; background: var(--surface2); color: var(--muted);
+      font-weight: 600; transition: all 0.15s;
+      font-family: 'Nunito', sans-serif;
     }
-    .chip.selected { border-color: var(--accent); color: var(--accent); background: rgba(91,106,245,0.1); }
-    .sheet-actions { display: flex; gap: 0.7rem; margin-top: 1.2rem; }
-    .btn-sheet-reset { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--muted); padding: 0.7rem; border-radius: 10px; font-size: 0.875rem; cursor: pointer; }
-    .btn-sheet-apply { flex: 2; background: var(--accent); border: none; color: #fff; padding: 0.7rem; border-radius: 10px; font-size: 0.875rem; font-weight: 500; cursor: pointer; }
+    .chip.selected { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+    .sheet-actions { display: flex; gap: 0.75rem; margin-top: 0.5rem; }
+    .btn-sheet-reset { flex: 1; background: var(--surface2); border: 1.5px solid var(--border); color: var(--muted); padding: 0.75rem; border-radius: 12px; font-size: 0.875rem; font-weight: 600; cursor: pointer; font-family: 'Nunito', sans-serif; }
+    .btn-sheet-apply { flex: 2; background: var(--accent); border: none; color: #fff; padding: 0.75rem; border-radius: 12px; font-size: 0.875rem; font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(58,123,213,0.3); font-family: 'Nunito', sans-serif; }
 
-    /* ITEMS */
-    .items-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    /* ITEM CARDS */
+    .items-list { display: flex; flex-direction: column; gap: 0.9rem; }
     .item-card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-      padding: 1rem; display: flex; gap: 1rem; align-items: flex-start;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.1rem 1.1rem 1.1rem 1rem;
+      display: flex; gap: 1rem; align-items: flex-start;
+      box-shadow: var(--shadow-sm);
       animation: fadeUp 0.3s ease both;
+      transition: box-shadow 0.2s, transform 0.15s;
     }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .item-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
     .item-thumb {
-      width: 80px; height: 80px; border-radius: 10px; background: var(--surface2);
-      border: 1px solid var(--border); display: flex; align-items: center;
-      justify-content: center; flex-shrink: 0; overflow: hidden;
+      width: 76px; height: 76px; border-radius: 12px;
+      background: var(--accent-light); border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; overflow: hidden;
     }
     .item-thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .item-thumb svg { color: var(--muted); }
+    .item-thumb svg { color: var(--accent); opacity: 0.5; }
+
     .item-body { flex: 1; min-width: 0; }
     .item-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
-    .item-name { font-size: 0.95rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .item-meta { font-size: 0.75rem; color: var(--muted); margin: 0.15rem 0 0.4rem; }
-    .tags { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.4rem; }
-    .tag { font-size: 0.68rem; font-weight: 500; padding: 0.18rem 0.55rem; border-radius: 20px; border: 1px solid; }
-    .tag-боловсруулах { color: var(--blue); border-color: rgba(59,130,246,0.3); background: rgba(59,130,246,0.08); }
-    .tag-хөргөлт { color: var(--accent); border-color: rgba(91,106,245,0.3); background: rgba(91,106,245,0.08); }
-    .tag-дулааны { color: var(--orange); border-color: rgba(249,115,22,0.3); background: rgba(249,115,22,0.08); }
-    .tag-шинэ { color: var(--green); border-color: rgba(34,197,94,0.3); background: rgba(34,197,94,0.08); }
-    .tag-хуучин { color: var(--red); border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.08); }
-    .item-price { font-size: 0.82rem; color: var(--text); font-weight: 500; }
-    .item-researcher { font-size: 0.75rem; color: var(--muted); }
+    .item-name { font-size: 0.97rem; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .item-meta { font-size: 0.76rem; color: var(--muted); margin: 0.18rem 0 0.45rem; font-weight: 500; }
+
+    .tags { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.45rem; }
+    .tag { font-size: 0.69rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 20px; letter-spacing: 0.02em; }
+    .tag-боловсруулах { color: var(--blue); background: var(--blue-bg); }
+    .tag-хөргөлт      { color: #0e7fa8; background: #e3f4fb; }
+    .tag-дулааны      { color: var(--orange); background: var(--orange-bg); }
+    .tag-шинэ         { color: var(--green); background: var(--green-bg); }
+    .tag-хуучин       { color: var(--red); background: var(--red-bg); }
+
+    .item-footer { display: flex; gap: 1.2rem; flex-wrap: wrap; align-items: center; }
+    .item-price { font-size: 0.85rem; font-weight: 700; color: var(--accent); }
+    .item-researcher { font-size: 0.76rem; color: var(--muted); font-weight: 500; }
+
     .item-actions { display: flex; flex-direction: column; gap: 0.4rem; flex-shrink: 0; }
     .btn-icon {
-      background: var(--surface2); border: 1px solid var(--border); color: var(--muted);
-      width: 34px; height: 34px; border-radius: 8px; display: flex;
-      align-items: center; justify-content: center; cursor: pointer;
+      background: var(--surface2); border: 1.5px solid var(--border);
+      color: var(--muted); width: 34px; height: 34px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      transition: all 0.15s;
     }
-    .btn-icon.delete { }
+    .btn-icon:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+    .btn-icon.delete:hover { background: var(--red-bg); border-color: var(--red); color: var(--red); }
 
-    /* BOTTOM FAB */
+    /* FAB */
     .fab {
       position: fixed; bottom: 1.5rem; right: 1.5rem;
       background: var(--accent); color: #fff; border: none;
-      width: 56px; height: 56px; border-radius: 50%;
-      font-size: 1.6rem; cursor: pointer; z-index: 90;
-      box-shadow: 0 4px 20px rgba(91,106,245,0.5);
+      width: 58px; height: 58px; border-radius: 50%;
+      font-size: 1.7rem; cursor: pointer; z-index: 90;
+      box-shadow: 0 4px 20px rgba(58,123,213,0.45);
       display: flex; align-items: center; justify-content: center;
       transition: transform 0.15s;
     }
     .fab:active { transform: scale(0.93); }
+    @media (min-width: 600px) { .fab { display: none; } }
 
-    /* MODAL — full screen on mobile */
+    /* MODAL */
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+      position: fixed; inset: 0; background: rgba(30,45,69,0.45);
       z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.2s;
       display: flex; align-items: flex-end;
     }
     .modal-overlay.open { opacity: 1; pointer-events: all; }
     .modal {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 20px 20px 0 0; padding: 1.5rem 1.2rem 2.5rem;
-      width: 100%; max-width: 700px; margin: 0 auto;
+      background: var(--surface); border-top: 1px solid var(--border);
+      border-radius: 24px 24px 0 0; padding: 1.4rem 1.3rem 2.5rem;
+      width: 100%; max-width: 720px; margin: 0 auto;
       max-height: 94vh; overflow-y: auto;
-      transform: translateY(100%); transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 -4px 24px rgba(58,123,213,0.12);
     }
     .modal-overlay.open .modal { transform: translateY(0); }
-    .modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 1.2rem; }
-    .modal-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 1.2rem; display: flex; justify-content: space-between; align-items: center; }
-    .modal-close { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
+    .modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 1.2rem; }
+    .modal-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 1.2rem; display: flex; justify-content: space-between; align-items: center; color: var(--text); }
+    .modal-close {
+      background: var(--surface2); border: 1.5px solid var(--border); color: var(--muted);
+      width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; font-size: 1rem;
+    }
+
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
     .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
     .form-group.full { grid-column: 1/-1; }
-    label { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+    label { font-size: 0.75rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
     .form-input {
-      background: var(--surface2); border: 1px solid var(--border); color: var(--text);
-      padding: 0.65rem 0.85rem; border-radius: 10px; font-size: 0.9rem;
+      background: var(--surface2); border: 1.5px solid var(--border); color: var(--text);
+      padding: 0.65rem 0.9rem; border-radius: 10px; font-size: 0.9rem;
       outline: none; width: 100%; -webkit-appearance: none;
+      font-family: 'Nunito', sans-serif; transition: border-color 0.2s;
     }
-    .form-input:focus { border-color: var(--accent); }
+    .form-input:focus { border-color: var(--accent); background: #fff; }
     .form-input::placeholder { color: var(--muted); }
-    .modal-footer { margin-top: 1.2rem; display: grid; grid-template-columns: 1fr 2fr; gap: 0.7rem; }
-    .btn-cancel { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); padding: 0.75rem; border-radius: 10px; font-size: 0.875rem; cursor: pointer; }
-    .btn-save { background: var(--accent); border: none; color: #fff; padding: 0.75rem; border-radius: 10px; font-size: 0.875rem; font-weight: 500; cursor: pointer; }
-    .btn-save:disabled { opacity: 0.5; }
 
-    /* IMAGE UPLOAD — mobile friendly */
+    .modal-footer { margin-top: 1.2rem; display: grid; grid-template-columns: 1fr 2fr; gap: 0.75rem; }
+    .btn-cancel {
+      background: var(--surface2); border: 1.5px solid var(--border); color: var(--muted);
+      padding: 0.8rem; border-radius: 12px; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; font-family: 'Nunito', sans-serif;
+    }
+    .btn-save {
+      background: var(--accent); border: none; color: #fff;
+      padding: 0.8rem; border-radius: 12px; font-size: 0.9rem; font-weight: 700;
+      cursor: pointer; font-family: 'Nunito', sans-serif;
+      box-shadow: 0 2px 8px rgba(58,123,213,0.3);
+    }
+    .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* IMAGE UPLOAD */
     .upload-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
     .upload-btn {
-      background: var(--surface2); border: 1px dashed var(--border);
-      border-radius: 10px; padding: 0.9rem 0.5rem;
+      background: var(--surface2); border: 2px dashed var(--border);
+      border-radius: 12px; padding: 1rem 0.5rem;
       display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
-      cursor: pointer; color: var(--muted); font-size: 0.75rem; text-align: center;
-      transition: border-color 0.2s;
+      cursor: pointer; color: var(--muted); font-size: 0.76rem; text-align: center;
+      font-weight: 600; transition: all 0.15s; font-family: 'Nunito', sans-serif;
     }
-    .upload-btn:active { border-color: var(--accent); }
-    .upload-btn svg { color: var(--muted); }
-    .upload-preview-wrap {
-      grid-column: 1/-1; display: none;
-      border-radius: 10px; overflow: hidden; position: relative;
-    }
+    .upload-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+    .upload-preview-wrap { grid-column: 1/-1; display: none; border-radius: 12px; overflow: hidden; position: relative; }
     .upload-preview-wrap.show { display: block; }
-    .upload-preview { width: 100%; height: 160px; object-fit: cover; border-radius: 10px; display: block; }
+    .upload-preview { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; display: block; }
     .upload-remove {
       position: absolute; top: 0.5rem; right: 0.5rem;
-      background: rgba(0,0,0,0.6); border: none; color: #fff;
+      background: rgba(30,45,69,0.6); border: none; color: #fff;
       width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
       font-size: 0.9rem; display: flex; align-items: center; justify-content: center;
     }
-    .upload-status { grid-column: 1/-1; font-size: 0.75rem; color: var(--muted); text-align: center; min-height: 18px; }
+    .upload-status { grid-column: 1/-1; font-size: 0.76rem; color: var(--muted); text-align: center; min-height: 18px; font-weight: 500; }
     .upload-spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 4px; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* EMPTY */
     .empty-state { text-align: center; padding: 4rem 2rem; color: var(--muted); }
-    .empty-state svg { margin-bottom: 1rem; opacity: 0.3; }
-    .empty-state p { font-size: 0.875rem; }
+    .empty-state .empty-icon { width: 72px; height: 72px; background: var(--accent-light); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
+    .empty-state p { font-size: 0.9rem; font-weight: 500; }
 
-    .toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 0.7rem 1.2rem; border-radius: 10px; font-size: 0.82rem; z-index: 999; opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap; }
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 5rem; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--text); color: #fff;
+      padding: 0.75rem 1.4rem; border-radius: 20px;
+      font-size: 0.85rem; font-weight: 600; z-index: 999;
+      opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap;
+      box-shadow: 0 4px 16px rgba(30,45,69,0.25);
+    }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .toast.success { border-color: rgba(34,197,94,0.4); }
-    .toast.error { border-color: rgba(239,68,68,0.4); }
+    .toast.success { background: var(--green); }
+    .toast.error { background: var(--red); }
 
     @media (min-width: 600px) {
       .modal-overlay { align-items: center; }
-      .modal { border-radius: 20px; max-height: 90vh; }
-      .fab { display: none; }
+      .modal { border-radius: 20px; max-height: 90vh; border: 1px solid var(--border); }
     }
     @media (max-width: 400px) {
-      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .stats-row { grid-template-columns: repeat(2,1fr); }
+      .form-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
 <nav>
-  <div class="nav-logo">Судалгаа<span>.</span>сан</div>
+  <div class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+    </div>
+    Судалгааны сан
+  </div>
   <button class="btn-add-nav" onclick="openModal()">
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
     Нэмэх
@@ -224,16 +309,16 @@
 
 <main>
   <div class="stats-row">
-    <div class="stat-card"><div class="stat-label">Нийт</div><div class="stat-value accent" id="statTotal">—</div></div>
-    <div class="stat-card"><div class="stat-label">Шинэ</div><div class="stat-value" id="statNew">—</div></div>
-    <div class="stat-card"><div class="stat-label">Ангилал</div><div class="stat-value" id="statCats">—</div></div>
-    <div class="stat-card"><div class="stat-label">Судлаач</div><div class="stat-value" id="statRes">—</div></div>
+    <div class="stat-card"><div class="stat-value" id="statTotal">—</div><div class="stat-label">Нийт</div></div>
+    <div class="stat-card"><div class="stat-value" id="statNew" style="color:var(--green)">—</div><div class="stat-label">Шинэ</div></div>
+    <div class="stat-card"><div class="stat-value" id="statCats">—</div><div class="stat-label">Ангилал</div></div>
+    <div class="stat-card"><div class="stat-value" id="statRes" style="color:var(--orange)">—</div><div class="stat-label">Судлаач</div></div>
   </div>
 
   <div class="filters">
     <div class="search-wrap">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" id="searchInput" placeholder="Хайх..." oninput="filterItems()">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Нэр, брэнд, судлаач хайх..." oninput="filterItems()">
     </div>
     <button class="filter-btn" id="filterToggle" onclick="openFilterSheet()">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
@@ -243,13 +328,14 @@
 
   <div class="items-list" id="itemsList">
     <div class="empty-state">
-      <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      <div class="empty-icon">
+        <svg width="32" height="32" fill="none" stroke="var(--accent)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      </div>
       <p>Ачааллаж байна...</p>
     </div>
   </div>
 </main>
 
-<!-- FAB (mobile) -->
 <button class="fab" onclick="openModal()">+</button>
 
 <!-- FILTER SHEET -->
@@ -257,22 +343,18 @@
   <div class="sheet">
     <div class="sheet-handle"></div>
     <div class="sheet-title">Шүүлтүүр</div>
-    <div class="sheet-row">
-      <div class="sheet-label">Ангилал</div>
-      <div class="chip-group" id="catChips">
-        <div class="chip" onclick="toggleChip(this,'cat','')">Бүх</div>
-        <div class="chip" onclick="toggleChip(this,'cat','Боловсруулах')">Боловсруулах</div>
-        <div class="chip" onclick="toggleChip(this,'cat','Хөргөлт')">Хөргөлт</div>
-        <div class="chip" onclick="toggleChip(this,'cat','Дулааны')">Дулааны</div>
-      </div>
+    <div class="sheet-label">Ангилал</div>
+    <div class="chip-group" id="catChips">
+      <div class="chip" onclick="toggleChip(this,'cat','')">Бүгд</div>
+      <div class="chip" onclick="toggleChip(this,'cat','Боловсруулах')">Боловсруулах</div>
+      <div class="chip" onclick="toggleChip(this,'cat','Хөргөлт')">Хөргөлт</div>
+      <div class="chip" onclick="toggleChip(this,'cat','Дулааны')">Дулааны</div>
     </div>
-    <div class="sheet-row">
-      <div class="sheet-label">Төлөв</div>
-      <div class="chip-group" id="statusChips">
-        <div class="chip" onclick="toggleChip(this,'status','')">Бүх</div>
-        <div class="chip" onclick="toggleChip(this,'status','Шинэ')">Шинэ</div>
-        <div class="chip" onclick="toggleChip(this,'status','Хуучин')">Хуучин</div>
-      </div>
+    <div class="sheet-label">Төлөв</div>
+    <div class="chip-group" id="statusChips">
+      <div class="chip" onclick="toggleChip(this,'status','')">Бүгд</div>
+      <div class="chip" onclick="toggleChip(this,'status','Шинэ')">Шинэ</div>
+      <div class="chip" onclick="toggleChip(this,'status','Хуучин')">Хуучин</div>
     </div>
     <div class="sheet-actions">
       <button class="btn-sheet-reset" onclick="resetFilters()">Арилгах</button>
@@ -281,7 +363,7 @@
   </div>
 </div>
 
-<!-- ADD/EDIT MODAL -->
+<!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -289,18 +371,14 @@
       <span id="modalTitle">Тоног төхөөрөмж нэмэх</span>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
-
     <div class="form-grid">
-      <!-- IMAGE UPLOAD -->
       <div class="form-group full">
         <label>Зураг</label>
         <div class="upload-wrap">
-          <!-- Camera button — гар утсанд камер нээнэ -->
           <label class="upload-btn" for="fileCamera">
             <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
             Камераар авах
           </label>
-          <!-- Gallery button — галлерейгаас сонгох -->
           <label class="upload-btn" for="fileGallery">
             <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
             Галлерейгаас
@@ -311,12 +389,9 @@
           </div>
           <div class="upload-status" id="uploadStatus"></div>
         </div>
-        <!-- capture="environment" = арын камер шууд нээнэ -->
         <input type="file" id="fileCamera" accept="image/*" capture="environment" style="display:none" onchange="handleImageUpload(event)">
-        <!-- галлерейгаас сонгох -->
         <input type="file" id="fileGallery" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
       </div>
-
       <div class="form-group full">
         <label>Нэр *</label>
         <input class="form-input" id="fName" placeholder="Мясорубка ИМ-200">
@@ -371,7 +446,6 @@
         <input class="form-input" id="fResearcher" placeholder="Б.Болд">
       </div>
     </div>
-
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal()">Болих</button>
       <button class="btn-save" id="btnSave" onclick="saveItem()">Хадгалах</button>
@@ -390,12 +464,9 @@
   const { createClient } = supabase;
   const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  let allItems = [];
-  let editingId = null;
-  let uploadedImageUrl = null;
+  let allItems = [], editingId = null, uploadedImageUrl = null;
   let activeFilters = { cat: '', status: '' };
 
-  // ── IMAGE UPLOAD ──────────────────────────────
   async function handleImageUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -411,19 +482,15 @@
       const data = await res.json();
       if (data.secure_url) {
         uploadedImageUrl = data.secure_url;
-        const preview = document.getElementById('uploadPreview');
-        preview.src = uploadedImageUrl;
+        document.getElementById('uploadPreview').src = uploadedImageUrl;
         document.getElementById('previewWrap').classList.add('show');
         status.textContent = '✓ Зураг амжилттай оруулагдлаа';
         showToast('Зураг upload боллоо ✓', 'success');
       } else throw new Error(data.error?.message || 'Upload алдаа');
     } catch(err) {
-      status.textContent = '✗ Upload амжилтгүй — дахин оролдоно уу';
+      status.textContent = '✗ Upload амжилтгүй';
       showToast('Upload алдаа: ' + err.message, 'error');
-    } finally {
-      btn.disabled = false;
-      event.target.value = '';
-    }
+    } finally { btn.disabled = false; event.target.value = ''; }
   }
 
   function removeImage() {
@@ -432,28 +499,26 @@
     document.getElementById('uploadStatus').textContent = '';
   }
 
-  // ── LOAD ─────────────────────────────────────
   async function loadItems() {
     const { data, error } = await db.from('equipment').select('*').order('created_at', { ascending: false });
-    if (error) { showToast('Өгөгдөл ачаалахад алдаа гарлаа', 'error'); return; }
+    if (error) { showToast('Өгөгдөл ачаалахад алдаа', 'error'); return; }
     allItems = data || [];
     updateStats();
     filterItems();
   }
 
-  // ── RENDER ────────────────────────────────────
   function renderItems(items) {
     const list = document.getElementById('itemsList');
     if (!items.length) {
-      list.innerHTML = `<div class="empty-state"><svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><p>Тоног төхөөрөмж олдсонгүй</p></div>`;
+      list.innerHTML = `<div class="empty-state"><div class="empty-icon"><svg width="32" height="32" fill="none" stroke="var(--accent)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div><p>Тоног төхөөрөмж олдсонгүй</p></div>`;
       return;
     }
     list.innerHTML = items.map((item, i) => `
-      <div class="item-card" style="animation-delay:${i*0.04}s">
+      <div class="item-card" style="animation-delay:${i*0.05}s">
         <div class="item-thumb">
           ${item.image_url
             ? `<img src="${item.image_url}" alt="${item.name}" loading="lazy">`
-            : `<svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`}
+            : `<svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>`}
         </div>
         <div class="item-body">
           <div class="item-top">
@@ -464,8 +529,11 @@
                 ${item.category ? `<span class="tag tag-${item.category.toLowerCase()}">${item.category}</span>` : ''}
                 ${item.status ? `<span class="tag tag-${item.status.toLowerCase()}">${item.status}</span>` : ''}
               </div>
-              ${item.price ? `<div class="item-price">${Number(item.price).toLocaleString()}₮</div>` : ''}
-              ${item.researcher ? `<div class="item-researcher">${item.researcher}</div>` : ''}
+              <div class="item-footer">
+                ${item.price ? `<div class="item-price">${Number(item.price).toLocaleString()}₮</div>` : ''}
+                ${item.capacity ? `<div class="item-researcher">${item.capacity}</div>` : ''}
+                ${item.researcher ? `<div class="item-researcher">👤 ${item.researcher}</div>` : ''}
+              </div>
             </div>
             <div class="item-actions">
               <button class="btn-icon" onclick="editItem(${item.id})">
@@ -480,51 +548,16 @@
       </div>`).join('');
   }
 
-  // ── FILTER ────────────────────────────────────
   function filterItems() {
     const q = document.getElementById('searchInput').value.toLowerCase();
     const filtered = allItems.filter(i => {
       const mq = !q || [i.name,i.brand,i.model,i.researcher].some(v=>v&&v.toLowerCase().includes(q));
-      const mc = !activeFilters.cat || i.category === activeFilters.cat;
-      const ms = !activeFilters.status || i.status === activeFilters.status;
-      return mq && mc && ms;
+      return mq && (!activeFilters.cat||i.category===activeFilters.cat) && (!activeFilters.status||i.status===activeFilters.status);
     });
     renderItems(filtered);
-    const btn = document.getElementById('filterToggle');
-    btn.classList.toggle('active', !!(activeFilters.cat || activeFilters.status));
+    document.getElementById('filterToggle').classList.toggle('active', !!(activeFilters.cat||activeFilters.status));
   }
 
-  // ── FILTER SHEET ──────────────────────────────
-  let tempFilters = { cat: '', status: '' };
-  function openFilterSheet() {
-    tempFilters = { ...activeFilters };
-    document.querySelectorAll('#catChips .chip').forEach(c => {
-      c.classList.toggle('selected', c.dataset.val === tempFilters.cat);
-    });
-    document.querySelectorAll('#statusChips .chip').forEach(c => {
-      c.classList.toggle('selected', c.dataset.val === tempFilters.status);
-    });
-    document.getElementById('filterSheet').classList.add('open');
-  }
-  function closeFilterSheetOutside(e) { if(e.target.id==='filterSheet') document.getElementById('filterSheet').classList.remove('open'); }
-  function toggleChip(el, type, val) {
-    el.dataset.val = val;
-    const group = type === 'cat' ? '#catChips' : '#statusChips';
-    document.querySelectorAll(group + ' .chip').forEach(c => c.classList.remove('selected'));
-    el.classList.add('selected');
-    tempFilters[type] = val;
-  }
-  function resetFilters() {
-    tempFilters = { cat: '', status: '' };
-    document.querySelectorAll('.chip').forEach(c => { if(c.dataset.val==='') c.classList.add('selected'); else c.classList.remove('selected'); });
-  }
-  function applyFilters() {
-    activeFilters = { ...tempFilters };
-    document.getElementById('filterSheet').classList.remove('open');
-    filterItems();
-  }
-
-  // ── STATS ─────────────────────────────────────
   function updateStats() {
     document.getElementById('statTotal').textContent = allItems.length;
     document.getElementById('statNew').textContent = allItems.filter(i=>i.status==='Шинэ').length;
@@ -532,25 +565,42 @@
     document.getElementById('statRes').textContent = new Set(allItems.map(i=>i.researcher).filter(Boolean)).size;
   }
 
-  // ── MODAL ─────────────────────────────────────
+  let tempFilters = { cat:'', status:'' };
+  function openFilterSheet() {
+    tempFilters = {...activeFilters};
+    document.querySelectorAll('#catChips .chip').forEach(c => c.classList.toggle('selected', c.dataset.val===tempFilters.cat));
+    document.querySelectorAll('#statusChips .chip').forEach(c => c.classList.toggle('selected', c.dataset.val===tempFilters.status));
+    document.getElementById('filterSheet').classList.add('open');
+  }
+  function closeFilterSheetOutside(e) { if(e.target.id==='filterSheet') document.getElementById('filterSheet').classList.remove('open'); }
+  function toggleChip(el, type, val) {
+    el.dataset.val = val;
+    document.querySelectorAll((type==='cat'?'#catChips':'#statusChips')+' .chip').forEach(c=>c.classList.remove('selected'));
+    el.classList.add('selected');
+    tempFilters[type] = val;
+  }
+  function resetFilters() {
+    tempFilters = {cat:'',status:''};
+    document.querySelectorAll('.chip').forEach(c=>{ if(c.dataset.val==='') c.classList.add('selected'); else c.classList.remove('selected'); });
+  }
+  function applyFilters() {
+    activeFilters = {...tempFilters};
+    document.getElementById('filterSheet').classList.remove('open');
+    filterItems();
+  }
+
   function openModal(item=null) {
-    editingId = item ? item.id : null;
-    uploadedImageUrl = item?.image_url || null;
-    document.getElementById('modalTitle').textContent = item ? 'Засах' : 'Тоног төхөөрөмж нэмэх';
+    editingId = item?item.id:null;
+    uploadedImageUrl = item?.image_url||null;
+    document.getElementById('modalTitle').textContent = item ? 'Мэдээлэл засах' : 'Тоног төхөөрөмж нэмэх';
     const fields = {fName:'name',fBrand:'brand',fModel:'model',fCat:'category',fStatus:'status',fH:'height',fW:'width',fL:'length',fPrice:'price',fCapacity:'capacity',fResearcher:'researcher'};
-    Object.entries(fields).forEach(([id, key]) => { document.getElementById(id).value = item?.[key] || ''; });
+    Object.entries(fields).forEach(([id,key])=>{ document.getElementById(id).value=item?.[key]||''; });
     const wrap = document.getElementById('previewWrap');
-    if (item?.image_url) {
-      document.getElementById('uploadPreview').src = item.image_url;
-      wrap.classList.add('show');
-      document.getElementById('uploadStatus').textContent = '';
-    } else {
-      wrap.classList.remove('show');
-      document.getElementById('uploadStatus').textContent = '';
-    }
-    document.getElementById('fileCamera').value = '';
-    document.getElementById('fileGallery').value = '';
-    document.getElementById('btnSave').disabled = false;
+    if (item?.image_url) { document.getElementById('uploadPreview').src=item.image_url; wrap.classList.add('show'); document.getElementById('uploadStatus').textContent=''; }
+    else { wrap.classList.remove('show'); document.getElementById('uploadStatus').textContent=''; }
+    document.getElementById('fileCamera').value='';
+    document.getElementById('fileGallery').value='';
+    document.getElementById('btnSave').disabled=false;
     document.getElementById('modalOverlay').classList.add('open');
   }
   function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
@@ -563,42 +613,39 @@
       model: document.getElementById('fModel').value.trim(),
       category: document.getElementById('fCat').value,
       status: document.getElementById('fStatus').value,
-      height: document.getElementById('fH').value || null,
-      width: document.getElementById('fW').value || null,
-      length: document.getElementById('fL').value || null,
-      price: document.getElementById('fPrice').value || null,
+      height: document.getElementById('fH').value||null,
+      width: document.getElementById('fW').value||null,
+      length: document.getElementById('fL').value||null,
+      price: document.getElementById('fPrice').value||null,
       capacity: document.getElementById('fCapacity').value.trim(),
       researcher: document.getElementById('fResearcher').value.trim(),
-      image_url: uploadedImageUrl || null,
+      image_url: uploadedImageUrl||null,
     };
     if (!payload.name) { showToast('Нэрийг заавал оруулна уу', 'error'); return; }
     const { error } = editingId
-      ? await db.from('equipment').update(payload).eq('id', editingId)
+      ? await db.from('equipment').update(payload).eq('id',editingId)
       : await db.from('equipment').insert(payload);
-    if (error) { showToast('Хадгалахад алдаа: ' + error.message, 'error'); return; }
-    showToast(editingId ? 'Амжилттай засагдлаа ✓' : 'Амжилттай нэмэгдлээ ✓', 'success');
-    closeModal();
-    loadItems();
+    if (error) { showToast('Хадгалахад алдаа: '+error.message,'error'); return; }
+    showToast(editingId?'Амжилттай засагдлаа ✓':'Амжилттай нэмэгдлээ ✓','success');
+    closeModal(); loadItems();
   }
 
-  function editItem(id) { const item = allItems.find(i=>i.id===id); if(item) openModal(item); }
+  function editItem(id) { const item=allItems.find(i=>i.id===id); if(item) openModal(item); }
   async function deleteItem(id) {
     if (!confirm('Устгах уу?')) return;
-    const { error } = await db.from('equipment').delete().eq('id', id);
-    if (error) { showToast('Устгахад алдаа', 'error'); return; }
-    showToast('Устгагдлаа', '');
-    loadItems();
+    const {error} = await db.from('equipment').delete().eq('id',id);
+    if (error) { showToast('Устгахад алдаа','error'); return; }
+    showToast('Устгагдлаа',''); loadItems();
   }
 
-  function showToast(msg, type) {
-    const t = document.getElementById('toast');
-    t.textContent = msg; t.className = `toast show ${type}`;
-    setTimeout(() => t.className = 'toast', 3000);
+  function showToast(msg,type) {
+    const t=document.getElementById('toast');
+    t.textContent=msg; t.className=`toast show ${type}`;
+    setTimeout(()=>t.className='toast',3000);
   }
 
-  // chip data-val init
-  document.querySelectorAll('#catChips .chip').forEach((c,i) => { c.dataset.val = ['','Боловсруулах','Хөргөлт','Дулааны'][i]; });
-  document.querySelectorAll('#statusChips .chip').forEach((c,i) => { c.dataset.val = ['','Шинэ','Хуучин'][i]; });
+  document.querySelectorAll('#catChips .chip').forEach((c,i)=>{ c.dataset.val=['','Боловсруулах','Хөргөлт','Дулааны'][i]; });
+  document.querySelectorAll('#statusChips .chip').forEach((c,i)=>{ c.dataset.val=['','Шинэ','Хуучин'][i]; });
 
   loadItems();
 </script>
